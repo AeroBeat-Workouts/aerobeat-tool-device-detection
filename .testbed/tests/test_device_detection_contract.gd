@@ -1,6 +1,14 @@
 extends GutTest
 
 const AeroDeviceDetectionScript := preload("res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetection.gd")
+const AeroDeviceDetectionScriptPath := "res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetection.gd"
+
+func test_documented_autoload_name_matches_runtime_surface() -> void:
+	var singleton = get_tree().root.get_node_or_null("AeroDeviceDetection")
+	assert_not_null(singleton, "testbed should expose the documented AeroDeviceDetection autoload")
+	assert_null(get_tree().root.get_node_or_null("AeroDeviceDetectionRuntime"), "legacy AeroDeviceDetectionRuntime autoload name should be removed")
+	assert_true(singleton.has_method("detect_live"), "documented autoload should expose detect_live")
+	assert_eq(singleton.get_script().resource_path, AeroDeviceDetectionScriptPath, "documented autoload should point at the shared source script")
 
 func test_live_detection_callback_shape() -> void:
 	var detector = AeroDeviceDetectionScript.new()

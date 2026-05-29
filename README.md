@@ -2,7 +2,7 @@
 
 `aerobeat-tool-device-detection` provides a sharable Godot runtime surface for AeroBeat tool-side hardware detection.
 
-The public entrypoint is `AeroDeviceDetection` in `/src`, designed for autoload or direct-instantiation use inside a consumer/testbed project. The API is callback-first and promise-like: each detection request returns an `AeroDeviceDetectionOperation` that supports `on_success(...)` and `on_failure(...)` chaining while immediately normalizing the payload shape for live, simulated, and rejection paths.
+The public entrypoint is `AeroDeviceDetection` in `/src`, designed for autoload or direct-instantiation use inside a consumer/testbed project. In singleton mode, register `src/AeroDeviceDetection.gd` as the `AeroDeviceDetection` autoload so downstream projects call the same surface this repo proves in the hidden testbed. The API is callback-first and promise-like: each detection request returns an `AeroDeviceDetectionOperation` that supports `on_success(...)` and `on_failure(...)` chaining while immediately normalizing the payload shape for live, simulated, and rejection paths.
 
 ## Runtime contract
 

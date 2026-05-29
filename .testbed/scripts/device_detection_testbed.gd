@@ -241,7 +241,7 @@ func _on_preset_button_pressed(preset: Dictionary) -> void:
 func _run_live_detection() -> void:
 	_last_request_source = "live_startup"
 	status_label.text = "Running live detection…"
-	AeroDeviceDetectionRuntime.detect_live(
+	AeroDeviceDetection.detect_live(
 		{"profile": "live_startup"},
 		func(response: Dictionary) -> void:
 			_apply_detection_response(response, _last_request_source),
@@ -253,13 +253,13 @@ func _run_preset(preset: Dictionary) -> void:
 	_last_request_source = str(preset.get("id", "preset"))
 	status_label.text = "Running preset %s…" % _last_request_source
 	if preset.has("failure"):
-		AeroDeviceDetectionRuntime.simulate_failure(
+		AeroDeviceDetection.simulate_failure(
 			preset.get("failure", {}).duplicate(true),
 			func(response: Dictionary) -> void:
 				_apply_detection_failure(response, _last_request_source)
 		)
 		return
-	AeroDeviceDetectionRuntime.simulate_bundle(
+	AeroDeviceDetection.simulate_bundle(
 		preset.get("bundle", {}).duplicate(true),
 		func(response: Dictionary) -> void:
 			_apply_detection_response(response, _last_request_source),

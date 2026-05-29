@@ -2,8 +2,12 @@ config_version=5
 
 [application]
 
-config/name="AeroBeat Tool Testbed"
+config/name="AeroBeat Device Detection Testbed"
 config/features=PackedStringArray("4.6", "Forward Plus")
+
+[autoload]
+
+AeroDeviceDetectionRuntime="*res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetection.gd"
 
 [editor_plugins]
 

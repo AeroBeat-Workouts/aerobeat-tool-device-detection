@@ -1,20 +1,36 @@
 {
   "$schema": "https://chickensoft.games/schemas/addons.schema.json",
   "addons": {
-    // Install this repo into the hidden workbench the same way a consumer does.
-    "aerobeat-template-tool": {
+    "aerobeat-tool-device-detection": {
       "url": "..",
       "source": "symlink",
       "subfolder": "/"
     },
-    // Tool-template bootstrap pins the shared tool/workflow contract.
-    // `main` is intentional until aerobeat-tool-core starts tagging releases.
     "aerobeat-tool-core": {
       "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-core.git",
       "checkout": "main",
       "subfolder": "/"
     },
-    // GUT drives the repo-local test suite inside the hidden testbed/workbench.
+    "aerobeat-tool-image-loader": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-image-loader.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
+    "aerobeat-vendor-godot-image": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-image.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
+    "aerobeat-vendor-godot-video": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-video.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
+    "aerobeat-tool-video-player": {
+      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-video-player.git",
+      "checkout": "main",
+      "subfolder": "/"
+    },
     "gut": {
       "url": "git@github.com:bitwes/Gut.git",
       "checkout": "main",

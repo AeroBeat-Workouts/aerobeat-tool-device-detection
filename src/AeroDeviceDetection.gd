@@ -211,8 +211,8 @@ static func normalize_response(raw_response: Dictionary = {}) -> Dictionary:
 func _collect_live_device(options: Dictionary) -> Dictionary:
 	var screen_size := _resolve_screen_size()
 	var renderer_name := _resolve_renderer_name()
-	var gpu_name := renderer_name
-	var gpu_vendor := _infer_gpu_vendor(renderer_name)
+	var gpu_name := _resolve_gpu_name(renderer_name)
+	var gpu_vendor := _infer_gpu_vendor("%s %s" % [gpu_name, renderer_name])
 	var profile := str(options.get("profile", DEFAULT_PROFILE))
 	var memory_gb := -1.0
 	if options.has("memory_gb_hint"):
@@ -239,6 +239,7 @@ func _collect_live_device(options: Dictionary) -> Dictionary:
 			"engine": Engine.get_version_info(),
 			"feature_tags": OS.get_cmdline_user_args(),
 			"best_effort": true,
+			"gpu_probe_name": gpu_name,
 		},
 	})
 
@@ -334,6 +335,57 @@ func _resolve_renderer_name() -> String:
 		if not current_method.is_empty():
 			return current_method
 	return _resolve_rendering_method()
+
+func _resolve_gpu_name(renderer_name: String) -> String:
+	var normalized_renderer := _normalize_string(renderer_name)
+	if not _looks_like_generic_renderer_name(normalized_renderer):
+		return normalized_renderer
+	var probed_gpu := _probe_host_gpu_name()
+	if probed_gpu != UNKNOWN:
+		return probed_gpu
+	return normalized_renderer
+
+func _probe_host_gpu_name() -> String:
+	var platform := _map_platform_name(OS.get_name())
+	match platform:
+		"linux":
+			return _probe_linux_gpu_name()
+		_:
+			return UNKNOWN
+
+func _probe_linux_gpu_name() -> String:
+	var output := []
+	var exit_code := OS.execute("sh", ["-lc", "lspci | grep -i -E 'vga|3d|display' | head -n 1"], output, true)
+	if exit_code != OK or output.is_empty():
+		return UNKNOWN
+	var line := str(output[0]).strip_edges()
+	if line.is_empty():
+		return UNKNOWN
+	var bracket_start := line.find("[")
+	var bracket_end := line.find("]", bracket_start + 1)
+	if bracket_start >= 0 and bracket_end > bracket_start:
+		var bracketed_name := line.substr(bracket_start + 1, bracket_end - bracket_start - 1).strip_edges()
+		if not bracketed_name.is_empty():
+			return _normalize_linux_gpu_name(line, bracketed_name)
+	var controller_separator := line.find(": ")
+	if controller_separator >= 0:
+		var descriptor := line.substr(controller_separator + 2).strip_edges()
+		if not descriptor.is_empty():
+			return _normalize_linux_gpu_name(line, descriptor)
+	return UNKNOWN
+
+func _normalize_linux_gpu_name(source_line: String, candidate: String) -> String:
+	var lowered_source := source_line.to_lower()
+	var lowered_candidate := candidate.to_lower()
+	if lowered_source.contains("intel") or lowered_candidate.contains("intel"):
+		if lowered_candidate.contains("iris xe"):
+			return "Intel Iris Xe Graphics"
+		return "Intel %s" % candidate.replace("Intel", "").replace("Corporation", "").strip_edges()
+	return candidate.replace("Corporation", "").strip_edges()
+
+func _looks_like_generic_renderer_name(renderer_name: String) -> bool:
+	var lowered := renderer_name.to_lower()
+	return lowered in [UNKNOWN, "forward_plus", "mobile", "gl_compatibility"]
 
 func _resolve_rendering_method() -> String:
 	if ProjectSettings.has_setting("rendering/renderer/rendering_method"):

@@ -1,0 +1,159 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/device_detection_testbed.gd" id="1_script"]
+
+[node name="DeviceDetectionTestbed" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="BackgroundLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BackgroundBase" type="ColorRect" parent="BackgroundLayer"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0627451, 0.0941176, 0.12549, 1)
+
+[node name="BackgroundImageSurface" type="TextureRect" parent="BackgroundLayer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BackgroundVideoSurface" type="Control" parent="BackgroundLayer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="OverlayMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="OverlayPanel" type="PanelContainer" parent="OverlayMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBox" type="HBoxContainer" parent="OverlayMargin/OverlayPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="ControlsPanel" type="VBoxContainer" parent="OverlayMargin/OverlayPanel/HBox"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="OverlayMargin/OverlayPanel/HBox/ControlsPanel"]
+layout_mode = 2
+autowrap_mode = 3
+text = "AeroBeat Device Detection Proving Surface"
+
+[node name="DescriptionLabel" type="Label" parent="OverlayMargin/OverlayPanel/HBox/ControlsPanel"]
+layout_mode = 2
+autowrap_mode = 3
+text = "Boot runs the real AeroDeviceDetection live path once. The seven buttons below replay the same scene-update logic against five Steam-style approximations, one host Surface / Intel Iris Xe profile, and one explicit failure branch. Intel Iris Xe resolves to the shared image loader background; everything else resolves to the looping video player background."
+
+[node name="RunLiveButton" type="Button" parent="OverlayMargin/OverlayPanel/HBox/ControlsPanel"]
+layout_mode = 2
+text = "Rerun Live Detection"
+
+[node name="PresetHeading" type="Label" parent="OverlayMargin/OverlayPanel/HBox/ControlsPanel"]
+layout_mode = 2
+text = "Preset Buttons (7)"
+
+[node name="PresetButtons" type="VBoxContainer" parent="OverlayMargin/OverlayPanel/HBox/ControlsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="InfoPanel" type="VBoxContainer" parent="OverlayMargin/OverlayPanel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="StatusLabel" type="Label" parent="OverlayMargin/OverlayPanel/HBox/InfoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "Status: booting"
+
+[node name="SummaryLabel" type="Label" parent="OverlayMargin/OverlayPanel/HBox/InfoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "Summary: pending"
+
+[node name="BackgroundModeLabel" type="Label" parent="OverlayMargin/OverlayPanel/HBox/InfoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "Background mode: pending"
+
+[node name="InfoLabel" type="Label" parent="OverlayMargin/OverlayPanel/HBox/InfoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "Profile: pending"
+
+[node name="ErrorLabel" type="Label" parent="OverlayMargin/OverlayPanel/HBox/InfoPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = ""
+
+[node name="JsonHeading" type="Label" parent="OverlayMargin/OverlayPanel/HBox/InfoPanel"]
+layout_mode = 2
+text = "Structured device payload"
+
+[node name="ResponseView" type="TextEdit" parent="OverlayMargin/OverlayPanel/HBox/InfoPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 420)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+editable = false
+context_menu_enabled = true
+
+[connection signal="pressed" from="OverlayMargin/OverlayPanel/HBox/ControlsPanel/RunLiveButton" to="." method="rerun_live_detection"]

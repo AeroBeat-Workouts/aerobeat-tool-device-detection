@@ -3,11 +3,13 @@ config_version=5
 [application]
 
 config/name="AeroBeat Device Detection Testbed"
+run/main_scene="res://scenes/device_detection_testbed.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]
 
 AeroDeviceDetectionRuntime="*res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetection.gd"
+AeroImageLoader="*res://addons/aerobeat-tool-image-loader/src/AeroImageLoader.gd"
 
 [editor_plugins]
 

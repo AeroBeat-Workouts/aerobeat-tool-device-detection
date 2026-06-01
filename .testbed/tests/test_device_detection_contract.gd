@@ -1,6 +1,7 @@
 extends GutTest
 
 const AeroDeviceDetectionScript := preload("res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetection.gd")
+const AeroDeviceDetectionModioMetadataScript := preload("res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetectionModioMetadata.gd")
 const AeroDeviceDetectionScriptPath := "res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetection.gd"
 
 func test_documented_autoload_name_matches_runtime_surface() -> void:
@@ -125,6 +126,65 @@ func _assert_success_shape(response: Dictionary, expected_kind: String, expected
 	assert_typeof(response.get("device", {}), TYPE_DICTIONARY, "response should always include a device dictionary")
 	assert_typeof(response.get("error", {}), TYPE_DICTIONARY, "response should always include an error dictionary")
 	assert_typeof(response.get("meta", {}), TYPE_DICTIONARY, "response should always include a meta dictionary")
+
+func test_modio_metadata_helper_builds_stable_upload_testing_pairs() -> void:
+	var metadata_pairs := AeroDeviceDetectionModioMetadataScript.build_metadata_kvp_pairs({
+		"success": true,
+		"request": {
+			"kind": "simulation",
+			"profile": "surface_pro_8_upload_fixture",
+			"simulated": true,
+			"requested_at_unix": 123,
+		},
+		"device": {
+			"profile": "surface_pro_8_upload_fixture",
+			"device_name": "Surface Pro 8",
+			"vendor_id": "SERIAL-123",
+			"model_name": "Surface Pro 8",
+			"platform": "windows",
+			"os_name": "Windows",
+			"os_version": "11",
+			"cpu_name": "11th Gen Intel(R) Core(TM) i7-1185G7",
+			"gpu_name": "Intel Iris Xe Graphics",
+			"gpu_vendor": "Intel",
+			"renderer_name": "forward_plus",
+			"rendering_method": "forward_plus",
+			"display_server": "windows",
+			"screen_size": {"width": 2880, "height": 1920},
+			"memory_gb": 16.0,
+			"tags": ["surface", "intel", "portable"],
+			"metadata": {
+				"engine": {"major": 4},
+				"feature_tags": ["debug"],
+			},
+		},
+		"meta": {"detected_at_unix": 456},
+	}, {"aerobeat_version": "1.0.0"})
+
+	assert_eq(metadata_pairs, [
+		"device_profile=surface_pro_8_upload_fixture",
+		"device_platform=windows",
+		"device_os_name=Windows",
+		"device_os_version=11",
+		"device_cpu_name=11th Gen Intel(R) Core(TM) i7-1185G7",
+		"device_gpu_vendor=Intel",
+		"device_gpu_name=Intel Iris Xe Graphics",
+		"device_rendering_method=forward_plus",
+		"device_display_server=windows",
+		"device_screen_width=2880",
+		"device_screen_height=1920",
+		"device_memory_gb=16",
+		"aerobeat_version=1.0.0",
+	], "helper should keep only stable/useful hardware fields plus explicit extra metadata")
+	assert_false(metadata_pairs.has("device_vendor_id=SERIAL-123"), "privacy-heavy identifiers should stay out of upload metadata")
+	assert_false(metadata_pairs.any(func(entry): return str(entry).contains("detected_at_unix")), "ephemeral timestamps should stay out of upload metadata")
+	assert_false(metadata_pairs.any(func(entry): return str(entry).contains("feature_tags")), "noisy runtime metadata should stay out of upload metadata")
+
+func test_modio_metadata_helper_accepts_json_string_payloads() -> void:
+	var metadata_text := AeroDeviceDetectionModioMetadataScript.build_metadata_kvp_text('{"device":{"profile":"steam_rtx_3060_desktop","platform":"windows","os_name":"Windows","os_version":"11","gpu_vendor":"NVIDIA","gpu_name":"GeForce RTX 3060","rendering_method":"forward_plus","display_server":"windows","screen_size":{"width":1920,"height":1080},"memory_gb":32}}', {"aerobeat_version": "1.0.0"})
+	assert_string_contains(metadata_text, "device_profile=steam_rtx_3060_desktop")
+	assert_string_contains(metadata_text, "device_gpu_name=GeForce RTX 3060")
+	assert_string_contains(metadata_text, "aerobeat_version=1.0.0")
 
 func _assert_failure_shape(response: Dictionary, expected_kind: String, expected_simulated: bool, expected_profile: String, expected_code: String) -> void:
 	assert_false(response.get("success", true), "response should be a failure payload")

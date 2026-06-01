@@ -1,4 +1,3 @@
-class_name AeroDeviceDetectionModioMetadata
 extends RefCounted
 
 const AeroDeviceDetectionScript := preload("res://addons/aerobeat-tool-device-detection/src/AeroDeviceDetection.gd")

@@ -7,29 +7,34 @@
       "subfolder": "/"
     },
     "aerobeat-tool-core": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-core.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-core",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-tool-image-loader": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-image-loader.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-image-loader",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-vendor-godot-image": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-image.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-vendor-godot-image",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-vendor-godot-video": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-vendor-godot-video.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-vendor-godot-video",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "aerobeat-tool-video-player": {
-      "url": "git@github.com:AeroBeat-Workouts/aerobeat-tool-video-player.git",
-      "checkout": "main",
-      "subfolder": "/"
+      "url": "../../aerobeat-tool-video-player",
+      "subfolder": "/",
+      "source": "symlink"
+    },
+    "aerobeat-tool-headless-manager": {
+      "url": "../../aerobeat-tool-headless-manager",
+      "subfolder": "/",
+      "source": "symlink"
     },
     "gut": {
       "url": "git@github.com:bitwes/Gut.git",
